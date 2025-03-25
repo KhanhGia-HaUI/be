@@ -1,3 +1,5 @@
-const { type } = require("os");
+const axios = require('axios')
 
-console.log(typeof Date.now());
+const main = async () => {
+
+}

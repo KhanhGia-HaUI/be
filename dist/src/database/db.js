@@ -1,19 +1,5 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const connection_1 = require("./connection");
-const fs_1 = __importDefault(require("fs"));
+import { Connection } from "./connection";
+import fs from "fs";
 // let r = fs.readFileSync("./r.json", "utf-8")
 // let rs: rW[] = JSON.parse(r)
 // console.log(rs);
@@ -22,9 +8,9 @@ const fs_1 = __importDefault(require("fs"));
 // let wordData = fs.readFileSync("../../newdata.json", "utf-8")
 // let ws: word[] = JSON.parse(wordData)
 // console.log(ws);
-const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    const connection = new connection_1.Connection();
-    yield connection.connect();
+const main = async () => {
+    const connection = new Connection();
+    await connection.connect();
     // let res: any[] = []
     // for (let e of Object.keys(data1)) {
     //     res.push({
@@ -140,8 +126,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     //             console.log(e);
     //         })
     // }
-    yield connection.executeQuery(`select * from Word`).then((res) => {
-        fs_1.default.writeFileSync("./test.json", JSON.stringify(res));
+    await connection.executeQuery(`select * from Word`).then((res) => {
+        fs.writeFileSync("./test.json", JSON.stringify(res));
     });
     // for (let i = 0; i < rs.length; i++) {
     // await connection.executeQuery(`insert into Reading (readingId , content , name, requirement) values (${i + 1} , '${rs[i].content}' , '${rs[i].name}' , '${rs[i].requirement}')`)
@@ -164,6 +150,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     //     // console.log(rs[i].question[j] + "_____________" + rs[i].answer[j]);
     // }
     // }
-    yield connection.disconnect();
-});
+    await connection.disconnect();
+};
 main().catch((err) => console.error("Error in main function:", err));

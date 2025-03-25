@@ -1,25 +1,13 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const getAllWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const getAllWords = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         if (!userId) {
             res.status(400).json({
                 message: "not found token!"
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`select * from Word`)
+        let words = await globalThis.connection.executeQuery(`select * from Word`)
             .then((r) => {
             return r;
         });
@@ -34,11 +22,10 @@ const getAllWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             message: "have wrong"
         });
     }
-});
-const getWordById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const getWordById = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         let wordId = req.body.wordId;
         if (!userId) {
             res.status(400).json({
@@ -52,7 +39,7 @@ const getWordById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
+        let words = await globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
             .then((r) => {
             return r[0];
         });
@@ -73,11 +60,10 @@ const getWordById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             message: "have wrong"
         });
     }
-});
-const getRandomWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const getRandomWord = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         let wordId = Math.floor(Math.random() * 1000);
         if (!userId) {
             res.status(400).json({
@@ -85,7 +71,7 @@ const getRandomWord = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
+        let words = await globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
             .then((r) => {
             return r[0];
         });
@@ -106,11 +92,10 @@ const getRandomWord = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             message: "have wrong"
         });
     }
-});
-const addWordToFavorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const addWordToFavorite = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         let wordId = req.body.wordId;
         if (!userId) {
             res.status(400).json({
@@ -124,7 +109,7 @@ const addWordToFavorite = (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
+        let words = await globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
             .then((r) => {
             return r[0];
         });
@@ -134,7 +119,7 @@ const addWordToFavorite = (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
             return;
         }
-        yield globalThis.connection.executeQuery(`insert into Favorite (wordId,userId) values (${wordId} , ${userId})`)
+        await globalThis.connection.executeQuery(`insert into Favorite (wordId,userId) values (${wordId} , ${userId})`)
             .catch((e) => {
             throw new Error(e);
         });
@@ -148,18 +133,17 @@ const addWordToFavorite = (req, res) => __awaiter(void 0, void 0, void 0, functi
             message: "have wrong"
         });
     }
-});
-const getFavorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const getFavorite = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         if (!userId) {
             res.status(400).json({
                 message: "not found token!"
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`SELECT Favorite.wordId, Word.hwrite, Word.type, Word.synonymous, Word.antonym, Word.definition 
+        let words = await globalThis.connection.executeQuery(`SELECT Favorite.wordId, Word.hwrite, Word.type, Word.synonymous, Word.antonym, Word.definition 
              FROM Favorite
              INNER JOIN Word ON Favorite.wordId = Word.wordId
              WHERE Favorite.userId = ?`, [userId]).then((r) => {
@@ -176,11 +160,10 @@ const getFavorite = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             message: "have wrong"
         });
     }
-});
-const addWordMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const addWordMyWord = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         let wordId = req.body.wordId;
         if (!userId) {
             res.status(400).json({
@@ -194,7 +177,7 @@ const addWordMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
+        let words = await globalThis.connection.executeQuery(`select * from Word where wordId = ${wordId}`)
             .then((r) => {
             return r[0];
         });
@@ -204,7 +187,7 @@ const addWordMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             });
             return;
         }
-        yield globalThis.connection.executeQuery(`insert into MyWord (wordId,userId) values (${wordId} , ${userId})`)
+        await globalThis.connection.executeQuery(`insert into MyWord (wordId,userId) values (${wordId} , ${userId})`)
             .catch((e) => {
             throw new Error(e);
         });
@@ -218,18 +201,17 @@ const addWordMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             message: "have wrong"
         });
     }
-});
-const getMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+};
+const getMyWord = async (req, res) => {
     try {
-        let userId = (_a = req.decodeAccessToken) === null || _a === void 0 ? void 0 : _a.userId;
+        let userId = req.decodeAccessToken?.userId;
         if (!userId) {
             res.status(400).json({
                 message: "not found token!"
             });
             return;
         }
-        let words = yield globalThis.connection.executeQuery(`SELECT MyWord.wordId, Word.hwrite, Word.type, Word.synonymous, Word.antonym, Word.definition 
+        let words = await globalThis.connection.executeQuery(`SELECT MyWord.wordId, Word.hwrite, Word.type, Word.synonymous, Word.antonym, Word.definition 
              FROM MyWord
              INNER JOIN Word ON MyWord.wordId = Word.wordId
              WHERE MyWord.userId = ?`, [userId]).then((r) => {
@@ -246,7 +228,63 @@ const getMyWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             message: "have wrong"
         });
     }
-});
+};
+const addNewBag = async (req, res) => {
+    try {
+        let userId = req.decodeAccessToken?.userId;
+        let bagName = req.body.bagName;
+        if (!userId) {
+            res.status(400).json({
+                message: "not found token!"
+            });
+            return;
+        }
+        if (!bagName) {
+            res.status(400).json({
+                message: "missing data!"
+            });
+            return;
+        }
+        await globalThis.connection.executeQuery(`insert into Bag (bagName,userId) values ('${bagName}',${userId})`)
+            .catch((e) => {
+            throw new Error(e);
+        });
+        res.status(200).json({
+            message: "ok",
+        });
+    }
+    catch (error) {
+        console.log("err when addNewBag : ", error);
+        res.status(500).json({
+            message: "have wrong"
+        });
+    }
+};
+const getAllBags = async (req, res) => {
+    try {
+        let userId = req.decodeAccessToken?.userId;
+        if (!userId) {
+            res.status(400).json({
+                message: "not found token!"
+            });
+            return;
+        }
+        let bags = await globalThis.connection.executeQuery(`select * from Bag`)
+            .then((r) => {
+            return r;
+        });
+        res.status(200).json({
+            message: "ok",
+            dataBags: bags
+        });
+    }
+    catch (error) {
+        console.log("err when getAllBags : ", error);
+        res.status(500).json({
+            message: "have wrong"
+        });
+    }
+};
 const userController = {
     getAllWords,
     getWordById,
@@ -254,6 +292,8 @@ const userController = {
     addWordToFavorite,
     getFavorite,
     addWordMyWord,
-    getMyWord
+    getMyWord,
+    addNewBag,
+    getAllBags
 };
-exports.default = userController;
+export default userController;

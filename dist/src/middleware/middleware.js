@@ -1,18 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Token_1 = require("../helpers/Token");
+import { verifyToken } from "@helpers/Token";
 const checkInforAccessToken = (req, res, next) => {
-    var _a;
     try {
         req.decodeAccessToken = {};
-        const at = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.at;
+        const at = req.cookies?.at;
         if (!at || at.length === 0) {
             return res.status(400).json({
                 message: "Not found token!"
             });
         }
-        const validAccessToken = (0, Token_1.verifyToken)(at);
-        if (!(validAccessToken === null || validAccessToken === void 0 ? void 0 : validAccessToken.state)) {
+        const validAccessToken = verifyToken(at);
+        if (!validAccessToken?.state) {
             return res.status(400).json({
                 message: validAccessToken.message
             });
@@ -28,23 +25,22 @@ const checkInforAccessToken = (req, res, next) => {
     }
 };
 const checkIsAdmin = (req, res, next) => {
-    var _a, _b;
     try {
         req.decodeAccessToken = {};
-        const at = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.at;
+        const at = req.cookies?.at;
         if (!at || at.length === 0) {
             return res.status(400).json({
                 message: "Not found token!"
             });
         }
-        const validAccessToken = (0, Token_1.verifyToken)(at);
-        if (!(validAccessToken === null || validAccessToken === void 0 ? void 0 : validAccessToken.state)) {
+        const validAccessToken = verifyToken(at);
+        if (!validAccessToken?.state) {
             return res.status(400).json({
                 message: validAccessToken.message
             });
         }
         req.decodeAccessToken = validAccessToken.data;
-        if (!((_b = req.decodeAccessToken) === null || _b === void 0 ? void 0 : _b.role)) {
+        if (!req.decodeAccessToken?.role) {
             res.cookie("at", "");
             return res.status(400).json({
                 message: "You are not admin!"
@@ -62,4 +58,4 @@ const checkIsAdmin = (req, res, next) => {
 const middleWare = {
     checkInforAccessToken, checkIsAdmin
 };
-exports.default = middleWare;
+export default middleWare;
